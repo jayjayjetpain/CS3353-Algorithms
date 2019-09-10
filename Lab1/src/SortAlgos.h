@@ -14,14 +14,14 @@ public:
     static void InsertionSort(std::vector<T>&);
     
 private:
-    void swap(T*, T*);
-    void MergeSort(std::vector<T>&, int, int);
-    void merge(std::vector<T>&, int, int, int);
+    static void swap(T*, T*);
+    static void mergeSort(std::vector<T>&, int, int);
+    static void merge(std::vector<T>&, int, int, int);
 
 };
 
 template<typename T>
-static void SortAlgos<T>::BubbleSort(std::vector<T>& list)
+void SortAlgos<T>::BubbleSort(std::vector<T>& list)
 {
     int swapNum = 1;
     int j = 0;
@@ -32,39 +32,39 @@ static void SortAlgos<T>::BubbleSort(std::vector<T>& list)
         swapNum = 0;
         for(int i = 0; i < list.size()-1; i++)
         {
-            if(list.at(k) > list.at(j))
+            if(list.at(i) > list.at(i+1))
             {
-                swap(list.at(j), list.at(k));
+                swap(&list.at(i), &list.at(i+1));
                 swapNum++;
             }
-            j++;
-            k++;
+//            j++;
+//           k++;
         }
     }
 }
 
 template<typename T>
-static void SortAlgos<T>::MergeSort(std::vector<T>& list)
+void SortAlgos<T>::MergeSort(std::vector<T>& list)
 {
-    MergeSort(list,0,list.size()-1);
+    mergeSort(list,0,list.size()-1);
 }
 
 template<typename T>
-void SortAlgos<T>::MergeSort(std::vector<T>& list, int left, int right)
+void SortAlgos<T>::mergeSort(std::vector<T>& list, int left, int right)
 {
     if(left < right)
     {
-        int mid = (left + right - 1)/2;
+        int mid = (left + right)/2;
 
-        MergeSort(list, left, mid);
-        MergeSort(list, mid + 1, right);
+        mergeSort(list, left, mid);
+        mergeSort(list, mid + 1, right);
 
         merge(list, left, mid, right);
     }
 }
 
 template<typename T>
-static void SortAlgos<T>::InsertionSort(std::vector<T>& list)
+void SortAlgos<T>::InsertionSort(std::vector<T>& list)
 {
     int i,j;
     T start;
@@ -78,7 +78,7 @@ static void SortAlgos<T>::InsertionSort(std::vector<T>& list)
             list.at(j+1) = list.at(j);
             j--;
         }
-        list.at(j) = start;
+        list.at(j+1) = start;
     }
 }
 
@@ -93,49 +93,43 @@ void SortAlgos<T>::swap(T* one, T* two)
 template<typename T>
 void SortAlgos<T>::merge(std::vector<T>& list, int left, int mid, int right)
 {
-    int center = (mid - left + 1);
-    int end = (right - mid);
+    std::vector<T> t1;
 
-    std::vector<T> t1,t2;
-
-    for(int z = 0; z < center; z++)
+    int i = left;
+	int j = mid + 1;
+    int k = 0;
+    while(i <= mid && j <= right)
     {
-        t1.at(z) = list.at(left + z);
-    }
-    for(int y = 0; y < ; y++)
-    {
-        t2.at(y) = list.at(mid + 1 + y);
-    }
-
-    int i,j = 0;
-    int k = 1;
-    while(left <= center && right <= end)
-    {
-        if(t1.at(i) < t2.at(j))
+        if(list.at(i) <= list.at(j))
         {
-            list.at(k) = t1.at(i);
+            t1.push_back(list.at(i));
             i++;
         }
         else
         {
-            list.at(k) = t2.at(j);
+            t1.push_back(list.at(j));
             j++;
         }
         k++;
     }
 
-    while(i <= center)
+    while(i <= mid)
     {
-        list.at(k) = t1.at(i);
+        t1.push_back(list.at(i));
         i++;
         k++;
     }
-    while(j <= end)
+    while(j <= right)
     {
-        list.at(k) = t2.at(j);
+        t1.push_back(list.at(j));
         j++;
         k++;
     }
+
+	for (i = left; i <= right; i += 1)
+	{
+		list.at(i) = t1.at(i - left);
+	}
 
 }
 
