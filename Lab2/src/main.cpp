@@ -9,8 +9,8 @@ int main()
 	Algorithms* ptr = new Search;
 
 	ptr->Load("Data/graph.txt", "Data/weights.txt", "Data/positions.txt");
-	ptr->Select(2, 0);
-	ptr->Execute(1, 9);
+	ptr->Select(1, 1);
+	ptr->Execute(1, 2);
 	ptr->Display();
 }
 

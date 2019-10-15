@@ -7,23 +7,24 @@ class Path {
 public:
 	Path();
 	Path(std::vector<int>, int);
-	Path(std::vector<int>, int, int, int);
+	Path(std::vector<int>, int, float);
+	Path(std::vector<int>, int, float, float);
 	
 	void setPath(std::vector<int>);
-	void setPathCost(int);
-	void setPathDist(int);
+	void setPathCost(float);
+	void setPathDist(float);
 	void setExploredNodes(int);
 
 	std::vector<int> getPath();
-	int getCost();
-	int getDist();
+	float getCost();
+	float getDist();
 	int getTotalNodes();
 	int getExploredNodes();
 
 private:
 	std::vector<int> dataPath;
-	int pathCost;
-	int pathDist;
+	float pathCost;
+	float pathDist;
 	int totalPathNodes;
 	int totalExploredNodes;
 };

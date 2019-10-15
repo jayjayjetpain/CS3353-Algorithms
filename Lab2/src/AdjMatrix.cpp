@@ -39,13 +39,16 @@ int AdjMatrix::getVertexNum()
 
 Node* AdjMatrix::at(int vertex, int edge)
 {
-	Node* tempNode = &data.at(vertex - 1).at(edge - 1);
-	return tempNode;
+	if (vertex > 0 && edge > 0 && vertex <= data.size() && edge <= data.size())
+	{
+		Node* tempNode = &data.at(vertex - 1).at(edge - 1);
+		return tempNode;
+	}
 }
 
-void AdjMatrix::setWeights(int vertex, int edge, int cost)
+void AdjMatrix::setWeights(int vertex, int edge, float cost)
 {
-	std::tuple<int, int, int> temp = std::make_tuple(vertex, edge, cost);
+	std::tuple<int, int, float> temp = std::make_tuple(vertex, edge, cost);
 	weights.push_back(temp);
 }
 
@@ -121,3 +124,16 @@ std::vector<Node*> AdjMatrix::getChildren(int source, Node* child)
 	return children;
 }
 
+float AdjMatrix::getWeight(int one, int two)
+{
+	for (int i = 0; i < weights.size(); i++)
+	{
+		if (std::get<0>(weights.at(i)) == one)
+		{
+			if (std::get<1>(weights.at(i)) == two)
+			{
+				return std::get<2>(weights.at(i));
+			}
+		}
+	}
+}

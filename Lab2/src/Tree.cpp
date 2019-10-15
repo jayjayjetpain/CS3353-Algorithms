@@ -8,6 +8,7 @@ Tree::Tree()
 	this->currNode = nullptr;
 	this->depth = 0;
 	this->totalNodes = 0;
+	this->numExplored = 0;
 }
 
 Tree::Tree(Node* data)
@@ -16,6 +17,7 @@ Tree::Tree(Node* data)
 	this->currNode = this->root;
 	this->depth = 1;
 	this->totalNodes = 1;
+	this->numExplored = 0;
 }
 
 Tree::~Tree()

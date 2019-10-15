@@ -57,7 +57,7 @@ Node* AdjList::at(int vertex, int edge)
 	}
 }
 
-void AdjList::setWeights(int vertex, int edge, int cost)
+void AdjList::setWeights(int vertex, int edge, float cost)
 {
 	std::tuple<int, int, int> temp = std::make_tuple(vertex, edge, cost);
 	weights.push_back(temp);
@@ -118,4 +118,18 @@ std::vector<Node*> AdjList::getChildren(int source, Node* child)
 		}
 	}
 	return children;
+}
+
+float AdjList::getWeight(int one, int two)
+{
+	for (int i = 0; i < weights.size(); i++)
+	{
+		if (std::get<0>(weights.at(i)) == one)
+		{
+			if (std::get<1>(weights.at(i)) == two)
+			{
+				return std::get<2>(weights.at(i));
+			}
+		}
+	}
 }

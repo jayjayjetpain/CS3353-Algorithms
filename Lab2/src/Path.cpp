@@ -20,7 +20,19 @@ Path::Path(std::vector<int> path, int nodes)
 	totalExploredNodes = nodes;
 }
 
-Path::Path(std::vector<int> path, int nodes, int cost, int dist)
+Path::Path(std::vector<int> path, int nodes, float cost)
+{
+	for (int i = 0; i < path.size(); i++)
+	{
+		dataPath.push_back(path.at(i));
+	}
+	pathCost = cost;
+	pathDist = 0;
+	totalPathNodes = dataPath.size();
+	totalExploredNodes = nodes;
+}
+
+Path::Path(std::vector<int> path, int nodes, float cost, float dist)
 {
 	for (int i = 0; i < path.size(); i++)
 	{
@@ -41,12 +53,12 @@ void Path::setPath(std::vector<int> path)
 	totalPathNodes = dataPath.size();
 }
 
-void Path::setPathCost(int cost)
+void Path::setPathCost(float cost)
 {
 	pathCost = cost;
 }
 
-void Path::setPathDist(int dist)
+void Path::setPathDist(float dist)
 {
 	pathDist = dist;
 }
@@ -61,12 +73,12 @@ std::vector<int> Path::getPath()
 	return dataPath;
 }
 
-int Path::getCost()
+float Path::getCost()
 {
 	return pathCost;
 }
 
-int Path::getDist()
+float Path::getDist()
 {
 	return pathDist;
 }

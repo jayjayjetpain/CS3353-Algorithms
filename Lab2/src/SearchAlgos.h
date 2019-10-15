@@ -17,6 +17,7 @@ public:
 	 static Path DFSRecur(int, int, Graph*);
 	 static Path BFSRecur(int, int, Graph*);
 	 static Path Dijkstra(int, int, Graph*);
+	 static Path AStar(int, int, Graph*);
 
 private:
 	static void DFSIterUtil(int, int, Graph*, Tree*);
@@ -24,6 +25,17 @@ private:
 	static void DFSRecurUtil(int, int, Graph*, Node*, std::vector<bool>&, Tree*);
 	static void BFSRecurUtil(int, int, Graph*, std::queue<Node*>&, std::vector<bool>&, Tree*);
 	static void DijkstraUtil(int, int, Graph*, Tree*);
+	static void AStarUtil(int, int, Graph*, Tree*);
+
+	static float distFormula(Node*, Node*);
+
+	struct compareCosts 
+	{
+		bool operator()(const Node* one, const Node* two)
+		{
+			return one > two;
+		}
+	};
 };
 
 

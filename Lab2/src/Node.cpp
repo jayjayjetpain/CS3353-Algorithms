@@ -115,3 +115,27 @@ bool Node::operator==(const Node* other) {
 		return false;
 	}
 }
+
+bool Node::operator<(const Node* other)
+{
+	if (this->getCost() < other->cost)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Node::operator>(const Node* other)
+{
+	if (this->getCost() > other->cost)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

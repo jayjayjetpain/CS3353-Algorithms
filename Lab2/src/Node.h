@@ -34,6 +34,8 @@ public:
 	Node& operator=(const Node&);
 	Node* operator[](const int);
 	bool operator==(const Node*);
+	bool operator<(const Node*);
+	bool operator>(const Node*);
 
 private:
 	float cost = 0;

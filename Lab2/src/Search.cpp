@@ -51,6 +51,7 @@ void Search::Load(std::string graph, std::string weights, std::string position)
 	}
 
 	two.open(weights);
+	float tempFloat1, tempFloat2, tempFloat3;
 	if (!(two.is_open()))
 	{
 		throw std::runtime_error("File Never Loaded");	//if file never opens, throw an execption to stop the program
@@ -64,10 +65,10 @@ void Search::Load(std::string graph, std::string weights, std::string position)
 		tempInt2 = std::stoi(temp);
 
 		std::getline(two, temp);
-		tempInt3 = std::stoi(temp);
+		tempFloat1 = std::stof(temp);
 
-		list.setWeights(tempInt1, tempInt2, tempInt3);
-		matrix.setWeights(tempInt1, tempInt2, tempInt3);
+		list.setWeights(tempInt1, tempInt2, tempFloat1);
+		matrix.setWeights(tempInt1, tempInt2, tempFloat1);
 	}
 
 	int vertex;
@@ -82,16 +83,16 @@ void Search::Load(std::string graph, std::string weights, std::string position)
 		vertex = std::stoi(temp);
 
 		std::getline(three, temp, ',');
-		tempInt1 = std::stoi(temp);
+		tempFloat1 = std::stof(temp);
 
 		std::getline(three, temp, ',');
-		tempInt2 = std::stoi(temp);
+		tempFloat2 = std::stof(temp);
 
 		std::getline(three, temp);
-		tempInt3 = std::stoi(temp);
+		tempFloat3 = std::stof(temp);
 
-		list.setPositions(vertex, tempInt1, tempInt2, tempInt3);
-		matrix.setPositions(vertex, tempInt1, tempInt2, tempInt3);
+		list.setPositions(vertex, tempFloat1, tempFloat2, tempFloat3);
+		matrix.setPositions(vertex, tempFloat1, tempFloat2, tempFloat3);
 	}
 
 	one.close();
@@ -129,6 +130,7 @@ void Search::Display()
 	std::cout << "Total Nodes Explored: " << tempPath.getExploredNodes() << std::endl;
 	std::cout << "Cost of Path: " << tempPath.getCost() << std::endl;
 	std::cout << "Distance of Path: " << tempPath.getDist() << std::endl;
+	std::cout << "Time Taken to Search: " << time_span.count() << " seconds" << std::endl << std::endl;
 }
 
 void Search::Stats()
@@ -159,10 +161,12 @@ void Search::Select(int searchNum, int graphNum)
 	}
 	else if (searchNum == DIJKSTRA)
 	{
+		algo = &SearchAlgos::Dijkstra;
 		currAlgo = "Dijkstra";
 	}
 	else if (searchNum == ASTAR)
 	{
+		algo = &SearchAlgos::AStar;
 		currAlgo = "A*";
 	}
 
