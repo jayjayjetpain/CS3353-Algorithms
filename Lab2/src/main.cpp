@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <chrono>
 #include "Search.h"
 
 int main(int argc, char* argv[])
@@ -30,12 +31,8 @@ int main(int argc, char* argv[])
 	//	}
 	//}
 
-	ptr->Load("Data/graph.txt", "Data/weights.txt", "Data/positions.txt");
-	//ptr->Select(4, 0);
-	//ptr->Execute(1, 20);
-	//ptr->Stats();
-	//ptr->Save(".txt");
-
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	ptr->Load("Data/largeGraph100.txt", "Data/largeWeights100.txt", "Data/largePositions100.txt");
 	for (int i = Search::IDFS; i <= Search::ASTAR; i++)
 	{
 		for (int j = Search::ADJLIST; j <= Search::ADJMATRIX; j++)
@@ -44,10 +41,12 @@ int main(int argc, char* argv[])
 
 			//calls Sort's Execute and Stats functions which runs the sort method, timing it, and then print data afterwards
 			ptr->Execute(1, 7);
-			ptr->Stats();
 
 			//calls Sort's Save method which prints the sorted vector and associated stats to an output file usin the original file name
 			ptr->Save(".txt");
 		}
 	}
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+	std::cout << "Time Taken to Run: " << time_span.count() << " seconds" << std::endl << std::endl;
 }

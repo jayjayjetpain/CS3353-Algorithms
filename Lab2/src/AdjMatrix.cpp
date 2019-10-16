@@ -4,18 +4,35 @@ AdjMatrix::AdjMatrix()
 {
 }
 
+AdjMatrix::~AdjMatrix()
+{
+	for (int i = 0; i < data.size(); i++)
+	{
+		for (int j = 0; j < data.at(i).size(); j++)
+		{
+			if (data.at(i).at(j) != nullptr)
+			{
+				delete data.at(i).at(j);
+			}
+		}
+	}
+}
+
 void AdjMatrix::addEdge(int vertex, int edge)
 {
-	if (data.at(vertex - 1).at(edge - 1).getData() == 0)
+	if (data.at(vertex - 1).at(edge - 1) == nullptr)
 	{
-		data.at(vertex - 1).at(edge - 1).setData(edge);
-		data.at(edge - 1).at(vertex - 1).setData(vertex);
+		Node* tempNode1 = new Node(edge);
+		Node* tempNode2 = new Node(vertex);
+		data.at(vertex - 1).at(edge - 1) = tempNode1;
+		data.at(edge - 1).at(vertex - 1) = tempNode2;
 	}
 }
 
 void AdjMatrix::addVertex(int vertex)
 {
-	data.at(vertex - 1).at(vertex - 1).setData(vertex);
+	Node* tempNode = new Node(vertex);
+	data.at(vertex - 1).at(vertex - 1) = tempNode;
 }
 
 int AdjMatrix::getVertexNum()
@@ -27,7 +44,7 @@ Node* AdjMatrix::at(int vertex, int edge)
 {
 	if (vertex > 0 && edge > 0 && vertex <= data.size() && edge <= data.size())
 	{
-		Node* tempNode = &data.at(vertex - 1).at(edge - 1);
+		Node* tempNode = data.at(vertex - 1).at(edge - 1);
 		return tempNode;
 	}
 }
@@ -42,9 +59,9 @@ void AdjMatrix::setPositions(int vertex, float x, float y, float z)
 {
 	for (int i = 0; i < data.size(); i++)
 	{
-		if (data.at(i).at(vertex-1).getData() != 0)
+		if (data.at(i).at(vertex-1) != nullptr)
 		{
-			data.at(i).at(vertex-1).setPos(x, y, z);
+			data.at(i).at(vertex-1)->setPos(x, y, z);
 		}
 	}
 }
@@ -55,8 +72,12 @@ void AdjMatrix::makeMatrix(int num)
 	data.resize(num);
 	for (int i = 0; i < data.size(); i++)
 	{
-		data.at(i).reserve(num);
-		data.at(i).resize(num);
+		for (int j = 0; j < data.size(); j++)
+		{
+			data.at(i).push_back(nullptr);
+		}
+		//data.at(i).reserve(num);
+		//data.at(i).resize(num);
 	}
 }
 
@@ -66,7 +87,7 @@ void AdjMatrix::print()
 	{
 		for (int j = 0; j < data.at(i).size(); j++)
 		{
-			std::cout << data.at(i).at(j).getData() << " ";
+			std::cout << data.at(i).at(j)->getData() << " ";
 		}
 		std::cout << std::endl;
 	}
@@ -81,9 +102,9 @@ Node* AdjMatrix::findNode(Node* source)
 		{
 			for (int j = 0; j < data.at(i).size(); j++)
 			{
-				if (data.at(i).at(j).getData() != source->getData() && data.at(i).at(j).getData() != 0)
+				if (data.at(i).at(j) != nullptr && data.at(i).at(j)->getData() != source->getData())
 				{
-					tempNode->addChild(&data.at(i).at(j));
+					tempNode->addChild(data.at(i).at(j));
 				}
 			}
 		}
@@ -100,9 +121,9 @@ std::vector<Node*> AdjMatrix::getChildren(int source, Node* child)
 		{
 			for (int j = 0; j < data.at(i).size(); j++)
 			{
-				if (data.at(i).at(j).getData() != source && data.at(i).at(j).getData() != 0)
+				if (data.at(i).at(j) != nullptr && data.at(i).at(j)->getData() != source)
 				{
-					children.push_back(&data.at(i).at(j));
+					children.push_back(data.at(i).at(j));
 				}
 			}
 		}

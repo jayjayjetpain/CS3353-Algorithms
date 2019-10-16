@@ -198,8 +198,9 @@ Path SearchAlgos::DFSRecur(int start, int end, Graph* g)
 		return p;
 	}
 	Node* startNode = g->at(start, start);
-	Tree* t = new Tree(startNode);
+	Tree* t = new Tree();
 	visited[start] = true;
+	t->insert(start, startNode);
 
 	DFSRecurUtil(start, end, g, startNode, visited, onTree, t);
 
@@ -223,6 +224,7 @@ Path SearchAlgos::DFSRecur(int start, int end, Graph* g)
 	}
 	p.setPath(finalPath);
 	p.setExploredNodes(totalExplored);
+	delete t;
 	return p;
 }
 
@@ -278,9 +280,10 @@ Path SearchAlgos::BFSRecur(int start, int end, Graph* g)
 		return p;
 	}
 	Node* startNode = g->at(start, start);
-	Tree* t = new Tree(startNode);
+	Tree* t = new Tree();
 	queue.push(startNode);
 	visited[start] = true;
+	t->insert(start, startNode);
 
 	BFSRecurUtil(start, end, g, queue, visited, onTree, t);
 
@@ -305,6 +308,7 @@ Path SearchAlgos::BFSRecur(int start, int end, Graph* g)
 	}
 	p.setPath(finalPath);
 	p.setExploredNodes(totalExplored);
+	delete t;
 	return p;
 }
 

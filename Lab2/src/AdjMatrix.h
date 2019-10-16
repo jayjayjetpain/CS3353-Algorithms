@@ -11,6 +11,7 @@
 class AdjMatrix : public Graph {
 public:
 	AdjMatrix();
+	~AdjMatrix();
 	virtual void addEdge(int, int);
 	virtual void addVertex(int);
 	virtual int getVertexNum();
@@ -24,7 +25,7 @@ public:
 	virtual float getWeight(int, int);
 
 private:
-	std::vector<std::vector<Node>> data;
+	std::vector<std::vector<Node*>> data;
 	std::vector<std::tuple<int, int, float>> weights;
 };
 #endif // ADJMATRIX_H
