@@ -1,5 +1,6 @@
 #include "AdjList.h"
 #include "LinkedList.h"
+#include <algorithm>
 
 AdjList::AdjList() 
 {
@@ -30,17 +31,6 @@ void AdjList::addEdge(int vertex, int data)
 	}
 }
 
-int AdjList::getEdgeNum(int vertex)
-{
-	for (typename LinkedList<Node>::Iterator i(dataList.begin()); i.getNode() != nullptr; i++)
-	{
-		if ((*i).getData() == vertex)
-		{
-			return (*i).getChildrenNum();
-		}
-	}
-}
-
 int AdjList::getVertexNum()
 {
 	return dataList.getLength();
@@ -59,7 +49,7 @@ Node* AdjList::at(int vertex, int edge)
 
 void AdjList::setWeights(int vertex, int edge, float cost)
 {
-	std::tuple<int, int, int> temp = std::make_tuple(vertex, edge, cost);
+	std::tuple<int, int, float> temp = std::make_tuple(vertex, edge, cost);
 	weights.push_back(temp);
 }
 
@@ -116,6 +106,10 @@ std::vector<Node*> AdjList::getChildren(int source, Node* child)
 				children.push_back((*i).operator[](j));
 			}
 		}
+	}
+	if (children.size() > 0)
+	{
+		std::sort(children.begin(), children.end(), myCompare);
 	}
 	return children;
 }

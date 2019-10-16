@@ -2,25 +2,52 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include "Search.h"
 
-int main()
+int main(int argc, char* argv[])
 {
+	if (argc >= 3)
+	{
+		int start = std::stoi(argv[1]);
+		int end = std::stoi(argv[2]);
+	}
+
 	Algorithms* ptr = new Search;
 
+	//std::ofstream out("Data/randoms.txt");
+	//int one = 0;
+	//int two = 0;
+
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	one = rand() % 10000 + 1;
+	//	two = rand() % 10000 + 1;
+	//	out << one << ", " << two;
+	//	if (i != 99)
+	//	{
+	//		out << std::endl;
+	//	}
+	//}
+
 	ptr->Load("Data/graph.txt", "Data/weights.txt", "Data/positions.txt");
-	ptr->Select(1, 1);
-	ptr->Execute(1, 2);
-	ptr->Display();
+	//ptr->Select(4, 0);
+	//ptr->Execute(1, 20);
+	//ptr->Stats();
+	//ptr->Save(".txt");
+
+	for (int i = Search::IDFS; i <= Search::ASTAR; i++)
+	{
+		for (int j = Search::ADJLIST; j <= Search::ADJMATRIX; j++)
+		{
+			ptr->Select(i, j);	//calls Sort's version of Select, which tell the Sort class which sorting method will later be executed
+
+			//calls Sort's Execute and Stats functions which runs the sort method, timing it, and then print data afterwards
+			ptr->Execute(1, 7);
+			ptr->Stats();
+
+			//calls Sort's Save method which prints the sorted vector and associated stats to an output file usin the original file name
+			ptr->Save(".txt");
+		}
+	}
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

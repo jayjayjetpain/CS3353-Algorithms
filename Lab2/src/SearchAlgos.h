@@ -9,6 +9,7 @@
 #include <vector>
 #include <stack>
 #include <queue>
+#include <math.h>
 
 class SearchAlgos {
 public:
@@ -22,8 +23,8 @@ public:
 private:
 	static void DFSIterUtil(int, int, Graph*, Tree*);
 	static void BFSIterUtil(int, int, Graph*, Tree*);
-	static void DFSRecurUtil(int, int, Graph*, Node*, std::vector<bool>&, Tree*);
-	static void BFSRecurUtil(int, int, Graph*, std::queue<Node*>&, std::vector<bool>&, Tree*);
+	static void DFSRecurUtil(int, int, Graph*, Node*, std::vector<bool>&, std::vector<bool>&, Tree*);
+	static void BFSRecurUtil(int, int, Graph*, std::queue<Node*>&, std::vector<bool>&, std::vector<bool>&, Tree*);
 	static void DijkstraUtil(int, int, Graph*, Tree*);
 	static void AStarUtil(int, int, Graph*, Tree*);
 
@@ -33,7 +34,15 @@ private:
 	{
 		bool operator()(const Node* one, const Node* two)
 		{
-			return one > two;
+			if (one->getCost() == two->getCost())
+			{
+				return one->getTime() > two->getTime();
+			}
+			else
+			{
+				return one->getCost() > two->getCost();
+			}
+			
 		}
 	};
 };

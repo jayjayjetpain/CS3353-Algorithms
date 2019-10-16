@@ -13,7 +13,6 @@ public:
 	AdjMatrix();
 	virtual void addEdge(int, int);
 	virtual void addVertex(int);
-	virtual int getEdgeNum(int);
 	virtual int getVertexNum();
 	virtual Node* at(int, int);
 	virtual void setWeights(int, int, float);

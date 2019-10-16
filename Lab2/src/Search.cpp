@@ -135,6 +135,24 @@ void Search::Display()
 
 void Search::Stats()
 {
+	std::vector<int> temp = tempPath.getPath();
+	std::cout << "Algorithm Name: " << currAlgo << std::endl;
+	std::cout << "Graph Name: " << graphType << std::endl;
+	std::cout << "Path: ";
+	for (int i = 0; i < temp.size(); i++)
+	{
+		std::cout << temp.at(i) << " ";
+	}
+	if (temp.size() == 0)
+	{
+		std::cout << "No path found";
+	}
+	std::cout << std::endl;
+	std::cout << "Number of Nodes: " << tempPath.getTotalNodes() << std::endl;
+	std::cout << "Total Nodes Explored: " << tempPath.getExploredNodes() << std::endl;
+	std::cout << "Cost of Path: " << tempPath.getCost() << std::endl;
+	std::cout << "Distance of Path: " << tempPath.getDist() << std::endl;
+	std::cout << "Time Taken to Search: " << time_span.count() << " seconds" << std::endl << std::endl;
 }
 
 void Search::Select(int searchNum, int graphNum)
@@ -142,22 +160,22 @@ void Search::Select(int searchNum, int graphNum)
 	if (searchNum == IDFS)
 	{
 		algo = &SearchAlgos::DFSIter;
-		currAlgo = "Iterative DFS";
+		currAlgo = "Iterative_DFS";
 	}
 	else if (searchNum == RDFS)
 	{
 		algo = &SearchAlgos::DFSRecur;
-		currAlgo = "Recursive DFS";
+		currAlgo = "Recursive_DFS";
 	}
 	else if (searchNum == IBFS)
 	{
 		algo = &SearchAlgos::BFSIter;
-		currAlgo = "Iterative BFS";
+		currAlgo = "Iterative_BFS";
 	}
 	else if (searchNum == RBFS)
 	{
 		algo = &SearchAlgos::BFSRecur;
-		currAlgo = "Recursive BFS";
+		currAlgo = "Recursive_BFS";
 	}
 	else if (searchNum == DIJKSTRA)
 	{
@@ -167,23 +185,51 @@ void Search::Select(int searchNum, int graphNum)
 	else if (searchNum == ASTAR)
 	{
 		algo = &SearchAlgos::AStar;
-		currAlgo = "A*";
+		currAlgo = "A_Star";
 	}
 
 	if (graphNum == ADJLIST)
 	{
 		currGraph = &list;
-		graphType = "Adjacency List";
+		graphType = "Adjacency_List";
 	}
 	else if (graphNum == ADJMATRIX)
 	{
 		currGraph = &matrix;
-		graphType = "Adjacency Matrix";
+		graphType = "Adjacency_Matrix";
 	}
 }
 
-void Search::Save(std::string fileName)
+void Search::Save(std::string fileExtension)
 {
+	//adds the new folder path and then algorithm for identificaion between algorithms -> BubbleSort-1000-random.txt
+	std::string file = "OutputData/" + currAlgo + "-" + graphType + fileExtension;
+	out.open(file);
+	if (!out.is_open())
+	{
+		throw std::runtime_error("No file opened");	//if file never opens, throw an execption to stop the program
+	}
+
+	std::vector<int> temp = tempPath.getPath();
+	out << "Algorithm Name: " << currAlgo << std::endl;
+	out << "Graph Name: " << graphType << std::endl;
+	out << "Path: ";
+	for (int i = 0; i < temp.size(); i++)
+	{
+		out << temp.at(i) << " ";
+	}
+	if (temp.size() == 0)
+	{
+		out << "No path found";
+	}
+	out << std::endl;
+	out << "Number of Nodes: " << tempPath.getTotalNodes() << std::endl;
+	out << "Total Nodes Explored: " << tempPath.getExploredNodes() << std::endl;
+	out << "Cost of Path: " << tempPath.getCost() << std::endl;
+	out << "Distance of Path: " << tempPath.getDist() << std::endl;
+	out << "Time Taken to Search: " << time_span.count() << " seconds" << std::endl << std::endl;
+
+	out.close();	//closes the file after fully printing everything
 }
 
 void Search::Configure()

@@ -139,15 +139,22 @@ std::vector<Node*> Tree::getPath()
 
 void Tree::makeEmpty(Node* t)
 {
-	if (t != nullptr)
+	if (t == nullptr)
 	{
-		for (int i = 0; i < t->getChildrenNum(); i++)
-		{
-			this->makeEmpty(t->operator[](i));
-		}
-		delete t;   //then deletes the root node
+		return;
 	}
-	t = nullptr;    //sets the root to nullptr for future deletions
+	else if (t->getChildrenNum() == 0)
+	{
+		delete t;
+	}
+	else
+	{
+		for (auto temp : t->getChildren())
+		{
+			this->makeEmpty(temp);
+		}
+		delete t;
+	}
 }
 
 void Tree::findNode(int parent)

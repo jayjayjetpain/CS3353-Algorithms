@@ -18,20 +18,6 @@ void AdjMatrix::addVertex(int vertex)
 	data.at(vertex - 1).at(vertex - 1).setData(vertex);
 }
 
-int AdjMatrix::getEdgeNum(int vertex)
-{
-	int count = 0;
-	for (int i = 0; i < data.at(vertex).size(); i++)
-	{
-		if (data.at(vertex-1).at(i).getData() != 0)
-		{
-			count++;
-		}
-	}
-
-	return count;
-}
-
 int AdjMatrix::getVertexNum()
 {
 	return data.size();

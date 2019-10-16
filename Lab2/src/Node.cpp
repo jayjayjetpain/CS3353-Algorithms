@@ -21,11 +21,32 @@ Node::Node(const Node& source) {
 	this->children = source.children;
 }
 
+//Node::~Node()
+//{
+//	if (this->children.size() != 0)
+//	{
+//		for (int i = 0; i < this->children.size(); i++)
+//		{
+//			this->children.at(i)->parent = nullptr;
+//			delete this->children.at(i);
+//		}
+//	}
+//	this->clear();
+//}
+
 int Node::getData() {
 	return this->data;
 }
 
+int Node::getData() const {
+	return this->data;
+}
+
 float Node::getCost() {
+	return this->cost;
+}
+
+float Node::getCost() const {
 	return this->cost;
 }
 
@@ -45,8 +66,17 @@ int Node::getChildrenNum() {
 	return this->children.size();
 }
 
-bool Node::isVisited() {
-	return this->visited;
+std::vector<Node*> Node::getChildren()
+{
+	return this->children;
+}
+
+int Node::getTime() {
+	return this->time;
+}
+
+int Node::getTime() const {
+	return this->time;
 }
 
 void Node::setData(int newData) {
@@ -86,6 +116,11 @@ void Node::addChild(std::vector<Node*> childs) {
 		childs.at(i)->setParent(this);
 		children.push_back(childs.at(i));
 	}
+}
+
+void Node::setTime(int newTime)
+{
+	this->time = newTime;
 }
 
 void Node::clearChildren() {
@@ -138,4 +173,13 @@ bool Node::operator>(const Node* other)
 	{
 		return false;
 	}
+}
+
+void Node::clear()
+{
+	cost = 0;
+	data = 0;
+	depth = 0;
+	time = 0;
+	this->parent = nullptr;
 }

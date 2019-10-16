@@ -12,7 +12,6 @@ public:
 	AdjList();
 	virtual void addVertex(int);
 	virtual void addEdge(int, int);
-	virtual int getEdgeNum(int);
 	virtual int getVertexNum();
 	virtual Node* at(int, int = 0);
 	virtual void setWeights(int, int, float);
@@ -30,6 +29,14 @@ private:
 	std::vector<std::tuple<int, int, float>> weights;
 	typename LinkedList<Node>::Iterator frontIter;
 	int vertexNum;
+
+	struct compareDatas
+	{
+		bool operator()(const Node* one, const Node* two)
+		{
+			return one->getData() < two->getData();
+		}
+	} myCompare;
 };
 
 #endif //ADJLIST_H

@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <fstream>
 
 class Search : public Algorithms {
 public:
@@ -54,6 +55,7 @@ private:
 	AdjList list;
 	AdjMatrix matrix;
 	Path tempPath;
+	std::ofstream out;
 };
 
 #endif // SEARCH_H
