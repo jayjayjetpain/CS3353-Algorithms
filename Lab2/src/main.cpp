@@ -5,6 +5,11 @@
 
 int main(int argc, char* argv[])
 {
+	/*	NOTES:
+	 *		For proper insertion from files, there must not be a trailing newline character
+	 *		To save data to a csv file properly, uncomment lines 23/24 and put "out" as the parameter of ptr->Save()
+	 *		My computer could not run the 100000 node graph with out overflowing
+	 */
 	int start = 1;
 	int end = 2;
 	if (argc >= 3)
@@ -53,7 +58,7 @@ int main(int argc, char* argv[])
 	//}
 
 	Algorithms* ptr = new Search;
-	ptr->Load("Data/graph2.txt", "Data/weights.txt", "Data/positions.txt");
+	ptr->Load("Data/largeGraph100.txt", "Data/largeWeights100.txt", "Data/largePositions100.txt");
 	for (int i = Search::IDFS; i <= Search::ASTAR; i++)
 	{
 		for (int j = Search::ADJLIST; j <= Search::ADJMATRIX; j++)
