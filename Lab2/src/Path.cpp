@@ -8,6 +8,11 @@ Path::Path()
 	totalExploredNodes = 0;
 }
 
+Path::~Path()
+{
+	clear();
+}
+
 Path::Path(std::vector<int> path, int nodes)
 {
 	for (int i = 0; i < path.size(); i++)
@@ -91,4 +96,13 @@ int Path::getTotalNodes()
 int Path::getExploredNodes()
 {
 	return totalExploredNodes;
+}
+
+void Path::clear()
+{	
+	dataPath.clear();
+	pathCost = 0;
+	pathDist = 0;
+	totalPathNodes = 0;
+	totalExploredNodes = 0;
 }

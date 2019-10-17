@@ -97,7 +97,6 @@ void Tree::move(int data)
 	}
 	else
 	{
-		std::cout << "No path available" << std::endl;
 	}
 }
 
@@ -121,7 +120,7 @@ void Tree::setPath()
 {
 	if (currNode == nullptr)
 	{
-		return; ///////idk is this breaks things**********************
+		return; 
 	}
 	while (currNode->getData() != root->getData())
 	{

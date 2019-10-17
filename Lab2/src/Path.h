@@ -6,6 +6,7 @@
 class Path {
 public:
 	Path();
+	~Path();
 	Path(std::vector<int>, int);
 	Path(std::vector<int>, int, float);
 	Path(std::vector<int>, int, float, float);
@@ -20,6 +21,8 @@ public:
 	float getDist();
 	int getTotalNodes();
 	int getExploredNodes();
+
+	void clear();
 
 private:
 	std::vector<int> dataPath;

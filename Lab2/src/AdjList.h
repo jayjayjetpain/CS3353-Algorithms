@@ -22,7 +22,6 @@ public:
 	virtual float getWeight(int, int);
 
 	typename LinkedList<Node>::Iterator getIter();
-	int searchVertex();
 
 private:
 	LinkedList<Node> dataList;

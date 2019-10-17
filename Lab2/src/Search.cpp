@@ -235,3 +235,9 @@ void Search::Save(std::string fileExtension)
 void Search::Configure()
 {
 }
+
+void Search::Save(std::ofstream& out)
+{
+	out << currAlgo << ", " << graphType << ", " << tempPath.getTotalNodes() << ", " << tempPath.getExploredNodes()
+		<< ", " << time_span.count() << ", " << tempPath.getDist() << ", " << tempPath.getCost() << std::endl;
+}

@@ -24,6 +24,7 @@ public:
 	virtual void Select(int, int);
 	virtual void Save(std::string);
 	virtual void Configure();
+	virtual void Save(std::ofstream&);
 
 	enum SearchingAlgos
 	{

@@ -9,7 +9,6 @@
 class Node {
 public:
 	Node();
-	//~Node();
 	Node(int);
 	Node(int, float, float, float);
 	Node(const Node&);

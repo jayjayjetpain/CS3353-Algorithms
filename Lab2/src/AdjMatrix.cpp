@@ -115,17 +115,12 @@ Node* AdjMatrix::findNode(Node* source)
 std::vector<Node*> AdjMatrix::getChildren(int source, Node* child)
 {
 	std::vector<Node*> children;
-	for (int i = 0; i < data.size(); i++)
+
+	for (int j = 0; j < data.at(source-1).size(); j++)
 	{
-		if (i + 1 == child->getData())
+		if (data.at(source-1).at(j) != nullptr && data.at(source-1).at(j)->getData() != source)
 		{
-			for (int j = 0; j < data.at(i).size(); j++)
-			{
-				if (data.at(i).at(j) != nullptr && data.at(i).at(j)->getData() != source)
-				{
-					children.push_back(data.at(i).at(j));
-				}
-			}
+			children.push_back(data.at(source-1).at(j));
 		}
 	}
 	return children;

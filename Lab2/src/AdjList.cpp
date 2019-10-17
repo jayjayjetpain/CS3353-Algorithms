@@ -107,6 +107,19 @@ std::vector<Node*> AdjList::getChildren(int source, Node* child)
 			}
 		}
 	}
+
+	std::tuple<float, float, float> pos;
+	for (int k = 0; k < children.size(); k++)
+	{
+		for (typename LinkedList<Node>::Iterator l(dataList.begin()); l.getNode() != nullptr; l++)
+		{
+			if ((*l).getData() == children.at(k)->getData())
+			{
+				pos = (*l).getPos();
+				children.at(k)->setPos(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
+			}
+		}
+	}
 	if (children.size() > 0)
 	{
 		std::sort(children.begin(), children.end(), myCompare);

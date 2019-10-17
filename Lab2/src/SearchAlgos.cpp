@@ -8,14 +8,19 @@ Path SearchAlgos::DFSIter(int start, int end, Graph* g)
 	t->setPath();
 	std::vector<Node*> tempPath = t->getPath();
 	std::vector<int> path;
+	float totalDist = 0;
 	if (tempPath.size() > 1 || start == end)
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			path.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
 	}
-	Path p(path, t->getExploredNum());
+	Path p(path, t->getExploredNum(), 0, totalDist);
 	delete t;
 	return p;
 }
@@ -100,14 +105,19 @@ Path SearchAlgos::BFSIter(int start, int end, Graph* g)
 	t->setPath();
 	std::vector<Node*> tempPath = t->getPath();
 	std::vector<int> path;
+	float totalDist = 0;
 	if (tempPath.size() > 1 || start == end)
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			path.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
 	}
-	Path p(path, t->getExploredNum());
+	Path p(path, t->getExploredNum(), 0, totalDist);
 	delete t;
 	return p;
 }
@@ -206,12 +216,18 @@ Path SearchAlgos::DFSRecur(int start, int end, Graph* g)
 
 	t->setPath();
 	std::vector<Node*> tempPath = t->getPath();
+	float totalDist = 0;
 	if ((tempPath.size() > 1 || start == end) && visited[0])
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			finalPath.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
+
 	}
 
 	int totalExplored = 0;
@@ -224,6 +240,7 @@ Path SearchAlgos::DFSRecur(int start, int end, Graph* g)
 	}
 	p.setPath(finalPath);
 	p.setExploredNodes(totalExplored);
+	p.setPathDist(totalDist);
 	delete t;
 	return p;
 }
@@ -290,12 +307,18 @@ Path SearchAlgos::BFSRecur(int start, int end, Graph* g)
 	t->setPath();
 	std::vector<Node*> tempPath = t->getPath();
 	
+	float totalDist = 0;
 	if ((tempPath.size() > 1 || start == end) && visited[0])
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			finalPath.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
+		
 	}
 
 	int totalExplored = 0;
@@ -308,6 +331,7 @@ Path SearchAlgos::BFSRecur(int start, int end, Graph* g)
 	}
 	p.setPath(finalPath);
 	p.setExploredNodes(totalExplored);
+	p.setPathDist(totalDist);
 	delete t;
 	return p;
 }
@@ -366,14 +390,19 @@ Path SearchAlgos::Dijkstra(int start, int end, Graph* g)
 	std::vector<Node*> tempPath = t->getPath();
 	std::vector<int> path;
 	float totalCost = tempPath.at(0)->getCost();
+	float totalDist = 0;
 	if (tempPath.size() > 1 || start == end)
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			path.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
 	}
-	Path p(path, t->getExploredNum(), totalCost);
+	Path p(path, t->getExploredNum(), totalCost, totalDist);
 	delete t;
 	return p;
 }
@@ -384,6 +413,7 @@ void SearchAlgos::DijkstraUtil(int start, int end, Graph* g, Tree* t)
 	Node* startNode = g->at(start, start);
 	std::vector<int> dist(g->getVertexNum() + 1, INT32_MAX);
 	std::vector<bool> visited(g->getVertexNum() + 1, false);
+	std::vector<bool> onTree(g->getVertexNum() + 1, false);
 	int time = 1;
 	startNode->setTime(0);
 	startNode->setCost(0);
@@ -403,12 +433,12 @@ void SearchAlgos::DijkstraUtil(int start, int end, Graph* g, Tree* t)
 		int tempInt = tempNode->getData();
 		std::vector<Node*> children = g->getChildren(tempInt, pq.top());
 
-		if (tempInt != start) //&& !visited[tempInt])
+		if (tempInt != start && !onTree[tempInt])
 		{
 			float tempWeight = g->getWeight(tempInt, pq.top()->getParent()->getData());
 			tempNode->setCost(pq.top()->getParent()->getCost() + tempWeight);
 			t->insert(pq.top()->getParent()->getData(), tempNode);
-			visited[tempInt] = true;
+			onTree[tempInt] = true;
 		}
 		pq.pop();
 
@@ -421,17 +451,21 @@ void SearchAlgos::DijkstraUtil(int start, int end, Graph* g, Tree* t)
 		int added = false;
 		for (int i = 0; i < children.size(); i++)
 		{
-			float weight = g->getWeight(tempNode->getData(), children.at(i)->getData());
-			
-			if (dist[children.at(i)->getData()] > dist[tempInt] + weight)
+			if (!visited[children.at(i)->getData()])
 			{
-				dist[children.at(i)->getData()] = dist[tempInt] + weight;
-				weight += dist[tempInt];
-				children.at(i)->setCost(weight);
-				children.at(i)->setTime(time);
-				pq.push(children.at(i));
-				added = true;
-			}	
+				float weight = g->getWeight(tempNode->getData(), children.at(i)->getData());
+
+				if (dist[children.at(i)->getData()] > dist[tempInt] + weight)
+				{
+					dist[children.at(i)->getData()] = dist[tempInt] + weight;
+					weight += dist[tempInt];
+					children.at(i)->setCost(weight);
+					children.at(i)->setTime(time);
+					pq.push(children.at(i));
+					added = true;
+				}
+				visited[children.at(i)->getData()] = true;
+			}
 		}
 
 		if (!added)
@@ -474,12 +508,16 @@ Path SearchAlgos::AStar(int start, int end, Graph* g)
 	std::vector<Node*> tempPath = t->getPath();
 	std::vector<int> path;
 	float totalCost = tempPath.at(0)->getCost();
-	float totalDist = sqrt(distFormula(tempPath.at(tempPath.size() - 1), tempPath.at(0)));
+	float totalDist = 0;
 	if (tempPath.size() > 1 || start == end)
 	{
 		for (int i = tempPath.size() - 1; i >= 0; i--)
 		{
 			path.push_back(tempPath.at(i)->getData());
+			if (i != 0)
+			{
+				totalDist += sqrt(distFormula(tempPath.at(i), tempPath.at(i - 1)));
+			}
 		}
 	}
 	Path p(path, t->getExploredNum(), totalCost, totalDist);
@@ -493,6 +531,7 @@ void SearchAlgos::AStarUtil(int start, int end, Graph* g, Tree* t)
 	Node* startNode = g->at(start, start);
 	std::vector<float> dist(g->getVertexNum() + 1, INT32_MAX);
 	std::vector<bool> visited(g->getVertexNum() + 1, false);
+	std::vector<bool> onTree(g->getVertexNum() + 1, false);
 	int time = 1;
 	startNode->setCost(0);
 	startNode->setTime(0);
@@ -513,13 +552,13 @@ void SearchAlgos::AStarUtil(int start, int end, Graph* g, Tree* t)
 		int tempInt = tempNode->getData();
 		std::vector<Node*> children = g->getChildren(tempInt, pq.top());
 
-		if (tempInt != start) //&& !visited[tempInt])
+		if (tempInt != start && !onTree[tempInt])
 		{
 			float tempWeight = g->getWeight(tempInt, pq.top()->getParent()->getData());
 			float tempDist = distFormula(tempNode, pq.top()->getParent());
 			tempNode->setCost(pq.top()->getParent()->getCost() + tempWeight + tempDist);
 			t->insert(pq.top()->getParent()->getData(), tempNode);
-			visited[tempInt] = true;
+			onTree[tempInt] = true;
 		}
 		pq.pop();
 
@@ -532,18 +571,22 @@ void SearchAlgos::AStarUtil(int start, int end, Graph* g, Tree* t)
 		int added = false;
 		for (int i = 0; i < children.size(); i++)
 		{
-			float weight = g->getWeight(tempNode->getData(), children.at(i)->getData());
-			float distance = distFormula(tempNode, children.at(i));
-			float totalCost = distance + weight;
-
-			if (dist[children.at(i)->getData()] > dist[tempInt] + totalCost)
+			if (!visited[children.at(i)->getData()])
 			{
-				dist[children.at(i)->getData()] = dist[tempInt] + totalCost;
-				totalCost += dist[tempInt];
-				children.at(i)->setCost(totalCost);
-				children.at(i)->setTime(time);
-				pq.push(children.at(i));
-				added = true;
+				float weight = g->getWeight(tempNode->getData(), children.at(i)->getData());
+				float distance = distFormula(tempNode, children.at(i));
+				float totalCost = distance + weight;
+
+				if (dist[children.at(i)->getData()] > dist[tempInt] + totalCost)
+				{
+					dist[children.at(i)->getData()] = dist[tempInt] + totalCost;
+					totalCost += dist[tempInt];
+					children.at(i)->setCost(totalCost);
+					children.at(i)->setTime(time);
+					pq.push(children.at(i));
+					added = true;
+				}
+				visited[children.at(i)->getData()] = true;
 			}
 		}
 

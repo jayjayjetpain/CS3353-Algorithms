@@ -21,19 +21,6 @@ Node::Node(const Node& source) {
 	this->children = source.children;
 }
 
-//Node::~Node()
-//{
-//	if (this->children.size() != 0)
-//	{
-//		for (int i = 0; i < this->children.size(); i++)
-//		{
-//			this->children.at(i)->parent = nullptr;
-//			delete this->children.at(i);
-//		}
-//	}
-//	this->clear();
-//}
-
 int Node::getData() {
 	return this->data;
 }
