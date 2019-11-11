@@ -9,7 +9,9 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <algorithm>
 #include <math.h>
+#include <cfloat>
 
 class TSPDynamic : public Algorithms {
 public:
@@ -22,7 +24,7 @@ public:
 
 private:
 	std::vector<float>* tspDynamic();
-	float getMinTour(int i, int state, std::vector<std::vector<float>>& memo, std::vector<std::vector<int>>& prev);
+	float getMinTour(int i, int state, std::vector<std::vector<float>>& memo, std::vector<std::vector<float>>& prev);
 	float distFormula(int one, int two);
 
 	FileHandler handler;

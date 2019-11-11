@@ -10,6 +10,8 @@
 #include <vector>
 #include <chrono>
 #include <algorithm>
+#include <math.h>
+#include <cfloat>
 
 class TSPBrute : public Algorithms {
 public: 

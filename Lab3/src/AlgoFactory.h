@@ -15,7 +15,7 @@ public:
 		LAST
 	};
 
-	static Algorithms* Create(AlgoFactory::AlgoClass type);
+	static Algorithms* Create(int type);
 
 };
 

@@ -7,6 +7,7 @@ FileHandler::FileHandler()
 FileHandler::FileHandler(std::string file)
 {
 	this->fileName = file;
+	this->Load();
 }
 
 void FileHandler::Load()
@@ -50,6 +51,7 @@ void FileHandler::Load()
 void FileHandler::updateFile(std::string newFile)
 {
 	this->fileName = newFile;
+	this->Load();
 }
 
 std::map <int, std::tuple<float, float, float>>& FileHandler::sendData()
@@ -71,7 +73,7 @@ void FileHandler::Save(std::string outFile, std::vector<float> data)
 	out << "Path of Minimum Cost: ";
 	for (int i = 0; i < data.size() - 2; i++)
 	{
-		std::cout << data.at(i);
+		out << data.at(i);
 
 		if (i != data.size() - 3)
 		{

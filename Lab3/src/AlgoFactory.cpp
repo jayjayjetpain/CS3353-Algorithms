@@ -2,7 +2,7 @@
 #include "TSPBrute.h"
 #include "TSPDynamic.h"
 
-Algorithms* AlgoFactory::Create(AlgoFactory::AlgoClass type)
+Algorithms* AlgoFactory::Create(int type)
 {
 	Algorithms* pAlgo;
 	switch (type)

@@ -3,9 +3,9 @@
 void TSPBrute::Load(std::string file)
 {
 	handler.updateFile(file);
-	positions = loader.sendData();
+	positions = handler.sendData();
 	size = positions.size();
-	FINISHED_STATE = 1 << size;
+	FINISHED_STATE = (1 << size) - 1;
 }
 
 void TSPBrute::Execute()
@@ -22,7 +22,7 @@ void TSPBrute::Execute()
 
 void TSPBrute::Display()
 {
-	std::cout << "Travelling Salesman Problem - Dynamic Programming Method" << std::endl;
+	std::cout << "Travelling Salesman Problem - Brute Force Method" << std::endl;
 	std::cout << "Number of Nodes in Circuit: " << size << std::endl;
 	std::cout << "Minimum Cost of Hamiltonian Circuit: " << tempPath.back() << std::endl;
 	std::cout << "Path of Minimum Cost: ";
@@ -41,7 +41,7 @@ void TSPBrute::Display()
 
 void TSPBrute::Stats()
 {
-	std::cout << "Travelling Salesman Problem - Dynamic Programming Method" << std::endl;
+	std::cout << "Travelling Salesman Problem - Brute Force Method" << std::endl;
 	std::cout << "Number of Nodes in Circuit: " << size << std::endl;
 	std::cout << "Minimum Cost of Hamiltonian Circuit: " << tempPath.back() << std::endl;
 	std::cout << "Path of Minimum Cost: ";
@@ -60,8 +60,9 @@ void TSPBrute::Stats()
 
 void TSPBrute::Save(std::string outFile)
 {
+	std::string ext = outFile + "Brute.txt";
 	tempPath.push_back(time_span.count());
-	handler.Save(outFile, tempPath);
+	handler.Save(ext, tempPath);
 }
 
 void TSPBrute::Configure()
@@ -76,11 +77,11 @@ std::vector<float> TSPBrute::tspBrute()
 		vertex.push_back(i);
 
 	// store minimum weight Hamiltonian Cycle. 
-	int min_path = INT_MAX;
+	float min_path = FLT_MAX;
 	do {
 
 		// store current Path weight(cost) 
-		int current_pathweight = 0;
+		float current_pathweight = 0;
 
 		// compute current path weight 
 		int k = 0;
@@ -107,11 +108,11 @@ std::vector<float> TSPBrute::tspBrute()
 
 float TSPBrute::distFormula(int one, int two)
 {
-	std::tuple<float, float, float> tempPos1 = positions.at(one);
-	std::tuple<float, float, float> tempPos2 = positions.at(two);
-	float temp = pow(std::get<0>(tempPos2) - std::get<0>(tempPos1), 2) +
+	std::tuple<float, float, float> tempPos1 = positions.at(one+1);
+	std::tuple<float, float, float> tempPos2 = positions.at(two+1);
+	float temp = sqrt(pow(std::get<0>(tempPos2) - std::get<0>(tempPos1), 2) +
 		pow(std::get<1>(tempPos2) - std::get<1>(tempPos1), 2) +
-		pow(std::get<2>(tempPos2) - std::get<2>(tempPos1), 2);
+		pow(std::get<2>(tempPos2) - std::get<2>(tempPos1), 2));
 
 	return temp;
 }
