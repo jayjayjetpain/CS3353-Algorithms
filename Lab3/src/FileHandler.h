@@ -10,6 +10,10 @@
 #include <tuple>
 #include <vector>
 
+/*	Interface for loading files (specifically position files) and printing statistics to an output file. The
+ *	Save function is specifically set up for TSP algos but generally prints the stats from search algos.
+ */
+
 class FileHandler {
 public:
 	FileHandler();
@@ -17,7 +21,7 @@ public:
 	void Load();
 	void updateFile(std::string);
 	std::map <int, std::tuple<float, float, float>>& sendData();
-	void Save(std::string, std::vector<float>);
+	void Save(std::string, std::string, std::vector<float>);
 
 private:
 	std::string fileName;

@@ -1,6 +1,3 @@
-// Program3.0.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <algorithm> 
 #include <vector>
 #include <iostream>
@@ -11,16 +8,28 @@
 
 int main() {
 
+	//Creates an instance of the Algorithm Factory to create each algorithm
 	AlgoFactory fact;
 	
-	for (int i = AlgoFactory::AlgoClass::BRUTE; i < AlgoFactory::AlgoClass::LAST; i++)
-	{
-		Algorithms* pAlgo = fact.Create(i);
-		pAlgo->Load("Data/positions4.txt");
-		pAlgo->Execute();
-		pAlgo->Stats();
-		pAlgo->Save("OutputData/pos4");
-	}
+	//File for input and path to output file for Load and Save respectively
+	std::string inFile = "Data/positions4.txt";
+	std::string outPath = "OutputData/";
+
+	//handles the creatation of a TSP Brute Force Algo object via AlgoFactory and excutes the search
+	Algorithms* pAlgoBrute = fact.Create(AlgoFactory::AlgoClass::BRUTE);
+	pAlgoBrute->Load(inFile);
+	pAlgoBrute->Execute();
+	pAlgoBrute->Stats();
+	std::cout << std::endl;
+	pAlgoBrute->Save(outPath);
+
+	//handles the creatation of a TSP Dynamic Programming Algo object via AlgoFactory and excutes the search
+	Algorithms* pAlgoDynamic = fact.Create(AlgoFactory::AlgoClass::DYNAMIC);
+	pAlgoDynamic->Load(inFile);
+	pAlgoDynamic->Execute();
+	pAlgoDynamic->Stats();
+	std::cout << std::endl;
+	pAlgoDynamic->Save(outPath);
 
 	return 0;
 }

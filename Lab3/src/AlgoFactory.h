@@ -4,6 +4,11 @@
 
 #include "Algorithms.h"
 
+/*	This class serves as the single interface for building TSP Algorithms, which extend the abstract class,
+ *	Algorithms. The only method is a Create method that takes in a value of its enum and creates the appropriate
+ *	TSP algo via Algorithms pointer so the user doesn't have to mess with creation via a poitner
+ */
+
 class Algorithms;
 
 class AlgoFactory {
@@ -15,7 +20,7 @@ public:
 		LAST
 	};
 
-	static Algorithms* Create(int type);
+	static Algorithms* Create(AlgoFactory::AlgoClass type);
 
 };
 
