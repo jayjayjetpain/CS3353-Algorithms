@@ -14,12 +14,17 @@
 
 class Algorithms   {
 public:
-	virtual void Load(std::string) = 0;
-	virtual void Execute() = 0;
-    virtual void Display() = 0;
-    virtual void Stats() = 0;
-    virtual void Save(std::string) = 0;
-    virtual void Configure() = 0;
+	virtual void Load(std::string) {}
+	virtual void Load(std::string, std::string, std::string) {}
+	virtual void Execute() {}
+	virtual void Execute(int, int) {}
+	virtual void Display() = 0;
+	virtual void Stats() = 0;
+	virtual void Select(int) {}
+	virtual void Select(int, int) {}
+	virtual void Save(std::string) = 0;
+	virtual void Configure() = 0;
+	virtual void Save(std::ofstream&) {}
 
 };
 

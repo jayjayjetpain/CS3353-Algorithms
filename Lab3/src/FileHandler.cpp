@@ -96,4 +96,6 @@ void FileHandler::Save(std::string outFile, std::string algoName, std::vector<fl
 	}
 	out << std::endl;
 	out << "Time Taken to Search: " << data.back() << " seconds" << std::endl;
+
+	out.close();
 }
