@@ -5,6 +5,7 @@
 
 #include "Algorithms.h"
 #include "FileHandler.h"
+#include "TabuAlgo.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -32,12 +33,12 @@ public:
 
 private:
 	FileHandler handler;
-	std::vector<float>(*algo)() = nullptr;
+	float distFormula(int one, int two);
+	std::vector<float>(*algo)(std::vector<std::vector<float>>, int, int) = nullptr;
 	std::map<int, std::tuple<float, float, float>> positions;
 	std::vector<std::vector<float>> distances;
 	std::chrono::duration<double> time_span;
 	std::vector<float> tempPath;
-	int FINISHED_STATE;
 	int size;
 
 };

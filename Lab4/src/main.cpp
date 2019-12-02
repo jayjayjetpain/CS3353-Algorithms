@@ -81,25 +81,26 @@ int main()
 	AlgoFactory fact;
 
 	//File for input and path to output file for Load and Save respectively
-	std::string inFile = "Data/positions9.txt";
+	std::string inFile = "Data/positions5.txt";
 	std::string outPath = "OutputData/";
 
 	//handles the creatation of a TSP Brute Force Algo object via AlgoFactory and excutes the search
-	Algorithms* pAlgoGenetic = fact.Create(AlgoFactory::AlgoClass::GENETIC);
-	pAlgoGenetic->Load(inFile);
-	pAlgoGenetic->Select();
-	pAlgoGenetic->Execute();
-	pAlgoGenetic->Stats();
-	std::cout << std::endl;
-	pAlgoGenetic->Save(outPath);
+	//Algorithms* pAlgoGenetic = fact.Create(AlgoFactory::AlgoClass::GENETIC);
+	//pAlgoGenetic->Load(inFile);
+	//pAlgoGenetic->Select();
+	//pAlgoGenetic->Execute();
+	//pAlgoGenetic->Stats();
+	//std::cout << std::endl;
+	//pAlgoGenetic->Save(outPath);
 
 	////handles the creatation of a TSP Dynamic Programming Algo object via AlgoFactory and excutes the search
-	//Algorithms* pAlgoDynamic = fact.Create(AlgoFactory::AlgoClass::DYNAMIC);
-	//pAlgoDynamic->Load(inFile);
-	//pAlgoDynamic->Execute();
-	//pAlgoDynamic->Stats();
-	//std::cout << std::endl;
-	//pAlgoDynamic->Save(outPath);
+	Algorithms* pAlgoTabu = fact.Create(AlgoFactory::AlgoClass::TABU);
+	pAlgoTabu->Load(inFile);
+	pAlgoTabu->Select();
+	pAlgoTabu->Execute();
+	pAlgoTabu->Stats();
+	std::cout << std::endl;
+	pAlgoTabu->Save(outPath);
 
 	return 0;
 
