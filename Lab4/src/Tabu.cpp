@@ -6,6 +6,8 @@ void Tabu::Load(std::string file)
 	handler.updateFile(file);	//sets the file to be read and loads the map
 	positions = handler.sendData();	//gets the map data from the FileLoader
 	size = positions.size();	//sets local variable of the size for easy access in algos
+	neighborhoodSearch = 1;
+	tabuListSize = 20;
 
 	//creates enough rows of vectors based on the size of the map
 	distances.reserve(size);
@@ -34,7 +36,7 @@ void Tabu::Execute()
 	//implementation syntax of high_resolution_clock:time_point and calculation below pulled from cplusplus.net
 	//url to model used -> http://www.cplusplus.com/reference/chrono/high_resolution_clock/now/
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	tempPath = (*algo)(distances, 300, 100);	//executes the appropriate loaded sort algorithm
+	tempPath = (*algo)(distances, neighborhoodSearch, tabuListSize);	//executes the appropriate loaded sort algorithm
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 
 	//using the time points found above, find the time elapsed; also derived from the above link
@@ -63,6 +65,14 @@ void Tabu::Stats()
 {
 	std::cout << "Travelling Salesman Problem - Tabu Algorithm Method" << std::endl;
 	std::cout << "Number of Nodes in Circuit: " << size << std::endl;
+	std::cout << "Type of Neighborhood Search: ";
+	if (neighborhoodSearch == 1)
+		std::cout << "Swap Neighborhood";
+	else if (neighborhoodSearch == 2)
+		std::cout << "Inversion Neighborhood";
+	std::cout << std::endl;
+
+	std::cout << "Tabu List Size: " << tabuListSize << std::endl;
 	std::cout << "Generated Path Distance: " << tempPath.back() << std::endl;
 	std::cout << "Generated Best Path: ";
 	for (int i = 0; i < tempPath.size() - 1; i++)
@@ -91,8 +101,18 @@ void Tabu::Select()
 	algo = &TabuAlgo::tabuAlgo;
 }
 
-void Tabu::Configure()
-{}
+void Tabu::Configure(int search, int listSize)
+{
+	if (search > 0 && search < 3)
+	{
+		neighborhoodSearch = search;
+	}
+
+	if (listSize > 0)
+	{
+		tabuListSize = listSize;
+	}
+}
 
 //returns the Euclidean distance between two nodes based on the positions in the map
 float Tabu::distFormula(int one, int two)

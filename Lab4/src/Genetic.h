@@ -29,7 +29,29 @@ public:
 	virtual void Stats();
 	virtual void Select();
 	virtual void Save(std::string);
-	virtual void Configure();
+	virtual void Configure(int = 0, int = 0, int = 0);
+
+	enum SelectionMethods
+	{
+		ELITISM = 1,
+		ROULETTE,
+		TOURNAMENT,
+		LAST1
+	};
+
+	enum MutationMethods
+	{
+		SWAP = 1,
+		INVERT,
+		LAST2
+	};
+
+	enum CrossoverMethods
+	{
+		ORDERED = 1,
+		PMX,
+		LAST3
+	};
 
 private:
 	FileHandler handler;
@@ -40,6 +62,9 @@ private:
 	std::chrono::duration<double> time_span;
 	std::vector<float> tempPath;
 	int size;
+	int selectionType;
+	int mutationType;
+	int crossoverType;
 
 };
 

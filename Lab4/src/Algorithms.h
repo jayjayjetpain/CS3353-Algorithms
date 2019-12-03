@@ -24,7 +24,8 @@ public:
 	virtual void Select(int) {}
 	virtual void Select(int, int) {}
 	virtual void Save(std::string) = 0;
-	virtual void Configure() = 0;
+	virtual void Configure(int, int) {}
+	virtual void Configure(int, int, int) {}
 	virtual void Save(std::ofstream&) {}
 
 };

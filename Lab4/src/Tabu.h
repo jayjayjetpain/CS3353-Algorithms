@@ -29,7 +29,14 @@ public:
 	virtual void Stats();
 	virtual void Save(std::string);
 	virtual void Select();
-	virtual void Configure();
+	virtual void Configure(int = 0, int = 0);
+
+	enum neighborhoodTypes
+	{
+		SWAP = 1,
+		INVERT,
+		LAST
+	};
 
 private:
 	FileHandler handler;
@@ -40,6 +47,8 @@ private:
 	std::chrono::duration<double> time_span;
 	std::vector<float> tempPath;
 	int size;
+	int neighborhoodSearch;
+	int tabuListSize;
 
 };
 

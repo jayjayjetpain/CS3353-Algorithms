@@ -2,21 +2,23 @@
 
 std::vector<std::vector<float>> GeneticAlgo::distances;
 
-std::vector<float> GeneticAlgo::geneticAlgo(std::vector<std::vector<float>> dist, int selection, int crossover, int mutation)
+std::vector<float> GeneticAlgo::geneticAlgo(std::vector<std::vector<float>> dist, int selection, int mutation, int crossover)
 {
 	distances = dist;
-	std::vector<float> tempPath = geneticAlgo(dist.size(), 100, 20, 0.01, 500);
+	std::srand(time(0));
+	std::vector<float> tempPath = geneticAlgo(dist.size(), 100, 0.01, 500, selection, mutation, crossover);
 	return tempPath;
 }
 
-std::vector<float> GeneticAlgo::geneticAlgo(int pathLen, int popSize, int eliteSize, float mutationRate, int generations)
+std::vector<float> GeneticAlgo::geneticAlgo(int pathLen, int popSize, float mutationRate, int generations,
+											int selectionType, int mutationType, int crossoverType)
 {
 	std::vector<std::vector<float>> tempPop = initializePop(popSize, pathLen);
 	std::cout << "Initial distance: " << (1 / rankRoutes(tempPop).at(0).second) << std::endl;
 
 	for (int i = 0; i < generations; i++)
 	{
-		tempPop = nextGeneration(tempPop, eliteSize, mutationRate);
+		tempPop = nextGeneration(tempPop, selectionType, mutationType, crossoverType, mutationRate);
 	}
 
 	std::vector<std::pair<int, float>> rankedPop = rankRoutes(tempPop);
@@ -62,16 +64,21 @@ std::vector<std::pair<int, float>> GeneticAlgo::rankRoutes(std::vector<std::vect
 	return fitnessResults;
 }
 
-std::vector<int> GeneticAlgo::selection(std::vector<std::pair<int, float>> popRanked, int eliteSize)
+std::vector<int> GeneticAlgo::selection(std::vector<std::pair<int, float>> popRanked, int selectionType)
 {
 	std::vector<int> selectionResults;
-	for (int i = 0; i < eliteSize; i++)
+
+	if (selectionType == 1)
 	{
-		selectionResults.push_back(popRanked.at(i).first);
+		selectionResults = selectionElitism(popRanked, popRanked.size() / 5);
 	}
-	for (int j = eliteSize; j < popRanked.size(); j++)
+	else if (selectionType == 2)
 	{
-		selectionResults.push_back(popRanked.at(j).first);
+		selectionResults = selectionRoulette(popRanked, popRanked.size() / 5);
+	}
+	else if (selectionType == 3)
+	{
+		selectionResults = selectionTournament(popRanked, popRanked.size() / 5);
 	}
 	return selectionResults;
 }
@@ -87,15 +94,199 @@ std::vector<std::vector<float>> GeneticAlgo::matingPool(std::vector<std::vector<
 	return matingPool;
 }
 
-std::vector<float> GeneticAlgo::breed(std::vector<float> parent1, std::vector<float> parent2)
+std::vector<float> GeneticAlgo::breed(std::vector<float> parent1, std::vector<float> parent2, int crossoverType)
 {
-	std::srand(time(NULL));
+	std::vector<float> child;
+	if (crossoverType == 1)
+	{
+		child = breedOrdered(parent1, parent2);
+	}
+	else if (crossoverType == 2)
+	{
+		child = breedPMX(parent1, parent2);
+	}
+
+	return child;
+}
+
+std::vector<std::vector<float>> GeneticAlgo::breedPopulation(std::vector<std::vector<float>> matingPool, int eliteSize, int crossoverType)
+{
+
+	std::vector<std::vector<float>> children;
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::vector<std::vector<float>> pool = matingPool;
+	std::shuffle(pool.begin(), pool.end(), std::default_random_engine(seed));
+
+	for (int i = 0; i < eliteSize; i++)
+	{
+		children.push_back(matingPool.at(i));
+	}
+
+	for (int j = eliteSize; j < matingPool.size(); j++)
+	{
+		std::vector<float> child = breed(pool.at(j), pool.at(matingPool.size() - j - 1), crossoverType);
+		children.push_back(child);
+	}
+	return children;
+}
+
+std::vector<float> GeneticAlgo::mutate(std::vector<float> individual, float rate, int mutationType)
+{
+	std::vector<float> newIndividual;
+	if (mutationType == 1)
+	{
+		newIndividual = mutateSwap(individual, rate);
+	}
+	else if (mutationType == 2)
+	{
+		newIndividual = mutateInvert(individual, rate);
+	}
+
+	return newIndividual;
+}
+
+std::vector<std::vector<float>> GeneticAlgo::mutatePopulation(std::vector<std::vector<float>> population, float rate, int mutationType)
+{
+	std::vector<std::vector<float>> mutatedPop;
+
+	for (int i = 0; i < population.size(); i++)
+	{
+		std::vector<float> mutatedInd = mutate(population.at(i), rate, mutationType);
+		mutatedPop.push_back(mutatedInd);
+	}
+	return mutatedPop;
+}
+
+std::vector<std::vector<float>> GeneticAlgo::nextGeneration(std::vector<std::vector<float>> currentGen, 
+															int selectionType, int mutationType, int crossoverType, float rate)
+{
+	std::vector<std::pair<int, float>> rankedPop = rankRoutes(currentGen);
+	std::vector<int> selectionResults = selection(rankedPop, selectionType);
+	std::vector<std::vector<float>> pool = matingPool(currentGen, selectionResults);
+	std::vector<std::vector<float>> children = breedPopulation(pool, 20, crossoverType);
+	std::vector<std::vector<float>> nextPop = mutatePopulation(children, rate, mutationType);
+	return nextPop;
+}
+
+std::vector<int> GeneticAlgo::selectionElitism(std::vector<std::pair<int, float>> popRanked, int eliteSize)
+{
+	std::vector<int> selectionResults;
+	for (int i = 0; i < eliteSize; i++)
+	{
+		selectionResults.push_back(popRanked.at(i).first);
+	}
+	for (int j = eliteSize; j < popRanked.size(); j++)
+	{
+		selectionResults.push_back(popRanked.at(j).first);
+	}
+	return selectionResults;
+}
+
+std::vector<int> GeneticAlgo::selectionRoulette(std::vector<std::pair<int, float>> popRanked, int eliteSize)
+{
+	float totalFitness = 0;
+	for (int k = 0; k < popRanked.size(); k++)
+	{
+		totalFitness += popRanked.at(k).second;
+	}
+
+	std::vector<int> selectionResults;
+	while(selectionResults.size() < eliteSize)
+	{
+		float pick = std::rand() % 100;
+		for (int j = 0; j < popRanked.size(); j++)
+		{
+			if (pick <= (popRanked.at(j).second/totalFitness)*100)
+			{
+				selectionResults.push_back(popRanked.at(j).first);
+				break;
+			}
+		}
+	}
+	for (int i = eliteSize; i < popRanked.size(); i++)
+	{
+		selectionResults.push_back(popRanked.at(i).first);
+	}
+	return selectionResults;
+}
+
+std::vector<int> GeneticAlgo::selectionTournament(std::vector<std::pair<int, float>> popRanked, int eliteSize)
+{
+	std::vector<int> selectionResults;
+	while (selectionResults.size() < eliteSize)
+	{
+		std::vector<int> indexList;
+		for (int k = 0; k < 20; k++)
+		{
+			int temp = std::rand() % popRanked.size();
+			indexList.push_back(temp);
+		}
+
+		int bestIndex = indexList.at(0);
+		for (int i = 0; i < indexList.size(); i++)
+		{
+			if (popRanked.at(indexList.at(i)).second > popRanked.at(bestIndex).second)
+			{
+				bestIndex = indexList.at(i);
+			}
+		}
+		selectionResults.push_back(popRanked.at(bestIndex).first);
+	}
+	for (int j = eliteSize; j < popRanked.size(); j++)
+	{
+		selectionResults.push_back(popRanked.at(j).first);
+	}
+	return selectionResults;
+}
+
+std::vector<float> GeneticAlgo::mutateSwap(std::vector<float> individual, float rate)
+{
+	for (int i = 1; i < individual.size() - 1; i++)
+	{
+		float num = ((float)(std::rand()) / (RAND_MAX));
+		if (num < rate)
+		{
+			int swapWith = int(std::rand() % (individual.size() - 2) + 1);
+
+			float city1 = individual.at(i);
+			float city2 = individual.at(swapWith);
+
+			individual.at(i) = city2;
+			individual.at(swapWith) = city1;
+			//std::cout << "mutate swap!" << std::endl;
+		}
+	}
+	return individual;
+}
+
+std::vector<float> GeneticAlgo::mutateInvert(std::vector<float> individual, float rate)
+{
+	for (int i = 1; i < individual.size() - 1; i++)
+	{
+		float num = ((float)(std::rand()) / (RAND_MAX));
+		if (num < rate)
+		{
+			int swapWith = int(std::rand() % (individual.size() - 2) + 1);
+
+			int start = std::min(i, swapWith);
+			int end = std::max(i, swapWith);
+
+			std::reverse(individual.begin() + start, individual.begin() + end);
+
+			//std::cout << "mutate invert!" << std::endl;
+		}
+	}
+	return individual;
+}
+
+std::vector<float> GeneticAlgo::breedOrdered(std::vector<float> parent1, std::vector<float> parent2)
+{
 	std::vector<float> child;
 	std::vector<float> childPart1;
 	std::vector<float> childPart2;
 
-	int geneA = int(std::rand() % (parent1.size() - 1) + 1);
-	int geneB = int(std::rand() % (parent1.size() - 1) + 1);
+	int geneA = int(std::rand() % (parent1.size() - 2) + 1);
+	int geneB = int(std::rand() % (parent1.size() - 2) + 1);
 
 	int start = std::min(geneA, geneB);
 	int end = std::max(geneA, geneB);
@@ -105,7 +296,7 @@ std::vector<float> GeneticAlgo::breed(std::vector<float> parent1, std::vector<fl
 		childPart1.push_back(parent1.at(i));
 	}
 
-	for (int j = 0; j < parent2.size(); j++)
+	for (int j = 1; j < parent2.size() - 1; j++)
 	{
 		if (std::find(childPart1.begin(), childPart1.end(), parent2.at(j)) == childPart1.end())
 		{
@@ -115,7 +306,8 @@ std::vector<float> GeneticAlgo::breed(std::vector<float> parent1, std::vector<fl
 
 	int inner = 0;
 	int outer = 0;
-	for (int k = 0; k < parent1.size(); k++)
+	child.push_back(0);
+	for (int k = 1; k < parent1.size() - 1; k++)
 	{
 		if (k >= start && k < end)
 		{
@@ -128,72 +320,66 @@ std::vector<float> GeneticAlgo::breed(std::vector<float> parent1, std::vector<fl
 			outer++;
 		}
 	}
+	child.push_back(0);
 
 	return child;
 }
 
-std::vector<std::vector<float>> GeneticAlgo::breedPopulation(std::vector<std::vector<float>> matingPool, int eliteSize)
+std::vector<float> GeneticAlgo::breedPMX(std::vector<float> parent1, std::vector<float> parent2)
 {
+	std::vector<float> child;
 
-	std::vector<std::vector<float>> children;
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::vector<std::vector<float>> pool = matingPool;
-	std::shuffle(pool.begin(), pool.end(), std::default_random_engine(seed));
+	int geneA = int(std::rand() % (parent1.size() - 2) + 1);
+	int geneB = int(std::rand() % (parent1.size() - 2) + 1);
 
-	//int length = matingPool.size() - eliteSize;
+	int start = std::min(geneA, geneB);
+	int end = std::max(geneA, geneB);
 
-	for (int i = 0; i < eliteSize; i++)
+	child.resize(parent1.size());
+	for (int i = start; i < end; i++)
 	{
-		children.push_back(matingPool.at(i));
+		child.at(i) = parent1.at(i);
 	}
 
-	for (int j = eliteSize; j < matingPool.size(); j++)
+	for (int j = start; j < end; j++)
 	{
-		std::vector<float> child = breed(pool.at(j), pool.at(matingPool.size() - j - 1));
-		children.push_back(child);
-	}
-	return children;
-}
-
-std::vector<float> GeneticAlgo::mutate(std::vector<float> individual, float rate)
-{
-	std::srand(time(NULL));
-	for (int i = 0; i < individual.size(); i++)
-	{
-		if (std::rand() < rate)
+		float firstVal = parent2.at(j);
+		float currVal = parent2.at(j);
+		if (std::find(child.begin(), child.end(), currVal) == child.end())
 		{
-			int swapWith = int(std::rand() % individual.size());
+			bool added = false;
+			float parallelVal = parent1.at(j);
+			while (!added)
+			{
+				float searchIndex = 0;
+				std::vector<float>::iterator temp = std::find(parent2.begin(), parent2.end(), parallelVal);
+				searchIndex = std::distance(parent2.begin(), temp);
 
-			float city1 = individual.at(i);
-			float city2 = individual.at(swapWith);
-
-			individual.at(i) = city2;
-			individual.at(swapWith) = city1;
+				if (searchIndex < start || searchIndex >= end)
+				{
+					child.at(searchIndex) = firstVal;
+					added = true;
+				}
+				else
+				{
+					currVal = parallelVal;
+					std::vector<float>::iterator temp = std::find(parent2.begin(), parent2.end(), parallelVal);
+					int index = std::distance(parent2.begin(), temp);
+					parallelVal = parent1.at(index);
+				}
+			}
 		}
 	}
-	return individual;
-}
 
-std::vector<std::vector<float>> GeneticAlgo::mutatePopulation(std::vector<std::vector<float>> population, float rate)
-{
-	std::vector<std::vector<float>> mutatedPop;
-
-	for (int i = 0; i < population.size(); i++)
+	for (int l = 1; l < parent2.size() - 1 ; l++)
 	{
-		std::vector<float> mutatedInd = mutate(population.at(i), rate);
-		mutatedPop.push_back(mutatedInd);
+		if (child.at(l) == 0)
+		{
+			child.at(l) = parent2.at(l);
+		}
 	}
-	return mutatedPop;
-}
 
-std::vector<std::vector<float>> GeneticAlgo::nextGeneration(static std::vector<std::vector<float>> currentGen, int eliteSize, float rate)
-{
-	std::vector<std::pair<int, float>> rankedPop = rankRoutes(currentGen);
-	std::vector<int> selectionResults = selection(rankedPop, eliteSize);
-	std::vector<std::vector<float>> pool = matingPool(currentGen, selectionResults);
-	std::vector<std::vector<float>> children = breedPopulation(pool, eliteSize);
-	std::vector<std::vector<float>> nextPop = mutatePopulation(children, rate);
-	return nextPop;
+	return child;
 }
 
 float GeneticAlgo::getPathFitness(std::vector<float> path)
