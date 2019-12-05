@@ -38,7 +38,19 @@ void Genetic::Execute()
 	//implementation syntax of high_resolution_clock:time_point and calculation below pulled from cplusplus.net
 	//url to model used -> http://www.cplusplus.com/reference/chrono/high_resolution_clock/now/
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	tempPath = (*algo)(distances, selectionType, mutationType, crossoverType);	//executes the appropriate loaded sort algorithm
+	tempPath = (*algo)(distances, selectionType, mutationType, crossoverType, 0);	//executes the appropriate loaded sort algorithm
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+
+	//using the time points found above, find the time elapsed; also derived from the above link
+	time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+}
+
+void Genetic::Execute(float stop)
+{
+	//implementation syntax of high_resolution_clock:time_point and calculation below pulled from cplusplus.net
+	//url to model used -> http://www.cplusplus.com/reference/chrono/high_resolution_clock/now/
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	tempPath = (*algo)(distances, selectionType, mutationType, crossoverType, stop);	//executes the appropriate loaded sort algorithm
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 
 	//using the time points found above, find the time elapsed; also derived from the above link
@@ -111,6 +123,7 @@ void Genetic::Save(std::string outFile)
 	std::string ext = outFile + "Genetic.txt";
 	tempPath.push_back(time_span.count());	//adds the timing for stats in the file
 	handler.Save(ext, "Genetic Algorithm", tempPath);
+	//out << time_span.count() << ", ";
 }
 
 void Genetic::Select()

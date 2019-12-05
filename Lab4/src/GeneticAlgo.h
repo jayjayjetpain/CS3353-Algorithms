@@ -11,16 +11,17 @@
 #include <random>       
 #include <chrono>  
 #include <tuple>
+#include <fstream>
 
 class GeneticAlgo {
 public:
-	static std::vector<float> geneticAlgo(std::vector<std::vector<float>>, int, int, int);
+	static std::vector<float> geneticAlgo(std::vector<std::vector<float>>, int, int, int, float);
 	 
 
 private:
-	static std::vector<float> geneticAlgo(int, int, float, int, int, int, int);
+	static std::vector<float> geneticAlgo(int, int, float, int, int, int, int, float);
 
-	static std::vector<float> createRoute(int);
+	static std::vector<float> createRoute(int, int);
 	static std::vector<std::vector<float>> initializePop(int, int);
 	static std::vector<std::pair<int, float>> rankRoutes(std::vector<std::vector<float>>);
 	static std::vector<int> selection(std::vector<std::pair<int, float>>, int);

@@ -3,16 +3,25 @@
 std::vector<std::vector<float>> TabuAlgo::distances;
 std::list<std::pair<float, float>>::const_iterator TabuAlgo::currBest;
 
-std::vector<float> TabuAlgo::tabuAlgo(std::vector<std::vector<float>> dist, int neighborhoodSearch, int tabuSize)
+std::vector<float> TabuAlgo::tabuAlgo(std::vector<std::vector<float>> dist, int neighborhoodSearch, int tabuSize, float stop)
 {
 	distances = dist;
 	std::vector<float> bestPath;
 	std::vector<float> tempPath;
-	for (int i = 0; i < 5; i++)
+	bool iter = false;
+	if (stop == 0)
 	{
-		std::vector<float> firstPath = initialSolution(dist.size());
+		iter = true;
+	}
+
+	//std::ofstream out;
+	//out.open("OutputData/Tabu.csv");
+	int i = 0;
+	do
+	{
+		std::vector<float> firstPath = initialSolution(dist.size(), i);
 		float firstDist = getPathDistance(firstPath);
-		tempPath = tabuAlgo(firstPath, firstDist, 3000, tabuSize, neighborhoodSearch);
+		tempPath = tabuAlgo(firstPath, firstDist, 1000, tabuSize, neighborhoodSearch, stop);
 		if (bestPath.size() == 0)
 		{
 			bestPath = tempPath;
@@ -21,11 +30,20 @@ std::vector<float> TabuAlgo::tabuAlgo(std::vector<std::vector<float>> dist, int 
 		{
 			bestPath = tempPath;
 		}
-	}
+		if (iter)
+		{
+			stop += 10;
+		}
+
+		i++;
+	} while (tempPath.back() > stop );
 	return bestPath;
 }
 
-std::vector<float> TabuAlgo::tabuAlgo(std::vector<float> firstPath, float firstDist, int iterations, int tabuSize, int neighborhoodSearch)
+
+
+std::vector<float> TabuAlgo::tabuAlgo(std::vector<float> firstPath, float firstDist, int iterations, int tabuSize,
+									  int neighborhoodSearch, float stop)
 {
 	int count = 1;
 	int change_count = 1;
@@ -91,6 +109,8 @@ std::vector<float> TabuAlgo::tabuAlgo(std::vector<float> firstPath, float firstD
 				}
 			}
 		}
+		//out << count << ", " << bestDist << std::endl;
+		//std::cout << count << ", " << bestDist << std::endl;
 
 		if (tabu_list.size() >= tabuSize)
 		{
@@ -103,7 +123,7 @@ std::vector<float> TabuAlgo::tabuAlgo(std::vector<float> firstPath, float firstD
 	return bestSolutionEver;
 }
 
-std::vector<float> TabuAlgo::initialSolution(int pathSize)
+std::vector<float> TabuAlgo::initialSolution(int pathSize, int j)
 {
 	std::vector<float> route;
 	for (int i = 0; i < pathSize; i++)

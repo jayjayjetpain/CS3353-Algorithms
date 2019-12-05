@@ -17,13 +17,14 @@ public:
 	virtual void Load(std::string) {}
 	virtual void Load(std::string, std::string, std::string) {}
 	virtual void Execute() {}
+	virtual void Execute(float) {}
 	virtual void Execute(int, int) {}
 	virtual void Display() = 0;
 	virtual void Stats() = 0;
 	virtual void Select() = 0;
 	virtual void Select(int) {}
 	virtual void Select(int, int) {}
-	virtual void Save(std::string) = 0;
+	virtual void Save(std::string) {}
 	virtual void Configure(int, int) {}
 	virtual void Configure(int, int, int) {}
 	virtual void Save(std::ofstream&) {}

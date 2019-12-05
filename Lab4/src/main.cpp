@@ -15,24 +15,33 @@ int main()
 	AlgoFactory fact;
 
 	//File for input and path to output file for Load and Save respectively
-	std::string inFile = "Data/positions9.txt";
+	std::string inFile = "Data/positions8.txt";
 	std::string outPath = "OutputData/";
+	//std::vector<float> stops = { 23.10, 28.41, 29.08, 40.17, 48.93, 52.77, 73.19, 84.44, 85.25, 85.83, 88.76, 95.11, 97.00, 101.07, 104.10,
+	//							109.71, 125.51, 127.72, 131.07, 135.66, 142, 148.05 };
 
 	//handles the creatation of a TSP Brute Force Algo object via AlgoFactory and excutes the search
-	//Algorithms* pAlgoGenetic = fact.Create(AlgoFactory::AlgoClass::GENETIC);
-	//pAlgoGenetic->Load(inFile);
-	//pAlgoGenetic->Select();
-	//pAlgoGenetic->Configure(1,1,1);
-	//pAlgoGenetic->Execute();
-	//pAlgoGenetic->Stats();
-	//std::cout << std::endl;
-	//pAlgoGenetic->Save(outPath);
+	/*Configure:	1: Type of Selection -> 1) Elitism  2) Roulette Wheel  3) Tournament
+	 *				2: Type of Mutation -> 1) Swap  2) Inversion
+	 *				3: Type of Crossover -> 1) Ordered  2) PMX (Partially-Mapped)
+	 */
+	Algorithms* pAlgoGenetic = fact.Create(AlgoFactory::AlgoClass::GENETIC);
+	pAlgoGenetic->Load(inFile);
+	pAlgoGenetic->Select();
+	pAlgoGenetic->Configure(1,1,1);
+	pAlgoGenetic->Execute();
+	pAlgoGenetic->Stats();
+	std::cout << std::endl;
+	pAlgoGenetic->Save(outPath);
 
-	////handles the creatation of a TSP Dynamic Programming Algo object via AlgoFactory and excutes the search
+	//handles the creatation of a TSP Dynamic Programming Algo object via AlgoFactory and excutes the search
+	/*Configure:	1: Type of Neighborhood Selection -> 1) Swap  2) Inversion
+	 *				2: Maximum Size of Tabu List
+	 */
 	Algorithms* pAlgoTabu = fact.Create(AlgoFactory::AlgoClass::TABU);
 	pAlgoTabu->Load(inFile);
 	pAlgoTabu->Select();
-	pAlgoTabu->Configure(2, 20);
+	pAlgoTabu->Configure(1,20);
 	pAlgoTabu->Execute();
 	pAlgoTabu->Stats();
 	std::cout << std::endl;
@@ -40,21 +49,5 @@ int main()
 
 	return 0;
 
-
-
-
-
-
-
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

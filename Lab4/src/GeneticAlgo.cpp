@@ -2,26 +2,49 @@
 
 std::vector<std::vector<float>> GeneticAlgo::distances;
 
-std::vector<float> GeneticAlgo::geneticAlgo(std::vector<std::vector<float>> dist, int selection, int mutation, int crossover)
+std::vector<float> GeneticAlgo::geneticAlgo(std::vector<std::vector<float>> dist, int selection, int mutation, int crossover, float stop)
 {
 	distances = dist;
 	std::srand(time(0));
-	std::vector<float> tempPath = geneticAlgo(dist.size(), 100, 0.01, 500, selection, mutation, crossover);
+	//std::ofstream out;
+	//out.open("OutputData/Genetic.csv");
+	std::vector<float> tempPath = geneticAlgo(dist.size(), 100, 0.04, 500, selection, mutation, crossover, stop);
 	return tempPath;
 }
 
 std::vector<float> GeneticAlgo::geneticAlgo(int pathLen, int popSize, float mutationRate, int generations,
-											int selectionType, int mutationType, int crossoverType)
+											int selectionType, int mutationType, int crossoverType, float stop)
 {
 	std::vector<std::vector<float>> tempPop = initializePop(popSize, pathLen);
 	std::cout << "Initial distance: " << (1 / rankRoutes(tempPop).at(0).second) << std::endl;
-
-	for (int i = 0; i < generations; i++)
+	//out << 1 << ", " << (1 / rankRoutes(tempPop).at(0).second) << std::endl;
+	bool iter = false;
+	if (stop == 0)
 	{
-		tempPop = nextGeneration(tempPop, selectionType, mutationType, crossoverType, mutationRate);
+		iter = true;
 	}
 
-	std::vector<std::pair<int, float>> rankedPop = rankRoutes(tempPop);
+	std::vector<std::pair<int, float>> rankedPop;
+	if (!iter)
+	{
+		do
+		{
+			tempPop = nextGeneration(tempPop, selectionType, mutationType, crossoverType, mutationRate);
+			rankedPop = rankRoutes(tempPop);
+			//std::cout << (1 / rankedPop.at(0).second) << std::endl;
+		} while ((1 / rankedPop.at(0).second) > stop);
+	}
+	else
+	{
+		for (int i = 2; i < generations; i++)
+		{
+			tempPop = nextGeneration(tempPop, selectionType, mutationType, crossoverType, mutationRate);
+			rankedPop = rankRoutes(tempPop);
+			//out << i << ", " << (1 / rankRoutes(tempPop).at(0).second) << std::endl;
+		}
+		/*rankedPop = rankRoutes(tempPop);*/
+	}
+
 	std::cout << "Final distance: " << (1 / rankedPop.at(0).second) << std::endl;
 	int bestRouteIndex = rankedPop.at(0).first;
 	std::vector<float> bestPath = tempPop.at(bestRouteIndex);
@@ -29,7 +52,7 @@ std::vector<float> GeneticAlgo::geneticAlgo(int pathLen, int popSize, float muta
 	return bestPath;
 }
 
-std::vector<float> GeneticAlgo::createRoute(int pathLen)
+std::vector<float> GeneticAlgo::createRoute(int pathLen, int j)
 {
 	std::vector<float> route;
 	for (int i = 0; i < pathLen; i++)
@@ -48,7 +71,7 @@ std::vector<std::vector<float>> GeneticAlgo::initializePop(int popSize, int path
 	std::vector<std::vector<float>> population;
 	for (int i = 0; i < popSize; i++)
 	{
-		population.push_back(createRoute(pathLen));
+		population.push_back(createRoute(pathLen, i));
 	}
 	return population;
 }

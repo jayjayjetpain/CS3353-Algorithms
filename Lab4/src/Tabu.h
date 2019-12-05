@@ -25,6 +25,7 @@ class Tabu : public Algorithms {
 public:
 	virtual void Load(std::string);
 	virtual void Execute();
+	virtual void Execute(float);
 	virtual void Display();
 	virtual void Stats();
 	virtual void Save(std::string);
@@ -41,7 +42,7 @@ public:
 private:
 	FileHandler handler;
 	float distFormula(int one, int two);
-	std::vector<float>(*algo)(std::vector<std::vector<float>>, int, int) = nullptr;
+	std::vector<float>(*algo)(std::vector<std::vector<float>>, int, int, float) = nullptr;
 	std::map<int, std::tuple<float, float, float>> positions;
 	std::vector<std::vector<float>> distances;
 	std::chrono::duration<double> time_span;
